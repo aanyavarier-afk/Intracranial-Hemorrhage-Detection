@@ -1,0 +1,5 @@
+streamlit
+tensorflow
+numpy
+keras # Although part of tensorflow, sometimes good to explicitly include if older versions are needed.
+pillow
