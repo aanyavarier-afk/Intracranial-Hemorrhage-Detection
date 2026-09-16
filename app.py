@@ -157,7 +157,6 @@ def main():
     )
 
     st.warning(
-        "⚠️ This application is for educational/research purposes only. "
         "It is not a medical diagnostic tool."
     )
 
