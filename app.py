@@ -18,10 +18,12 @@ st.set_page_config(
 # Load Model
 # ---------------------------------------------------
 @st.cache_resource
+@st.cache_resource
 def load_model(model_path):
     model = tf.keras.models.load_model(
         model_path,
-        compile=False
+        compile=False,
+        safe_mode=False
     )
     return model
 
