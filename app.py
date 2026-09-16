@@ -17,25 +17,6 @@ st.set_page_config(
 # ---------------------------------------------------
 # Load Model (Bypasses Keras 3 legacy load issue)
 # ---------------------------------------------------
-import streamlit as st
-import tensorflow as tf
-from tensorflow.keras.preprocessing import image
-import numpy as np
-from PIL import Image
-import os
-
-# ---------------------------------------------------
-# Streamlit Configuration
-# ---------------------------------------------------
-st.set_page_config(
-    page_title="Intracranial Hemorrhage Detection",
-    page_icon="🧠",
-    layout="centered"
-)
-
-# ---------------------------------------------------
-# Load Model (Bypasses Keras 3 legacy load issue)
-# ---------------------------------------------------
 @st.cache_resource
 def load_model_file(model_path):
     # Rebuild CNN architecture
