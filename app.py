@@ -190,7 +190,7 @@ model_path = "brain_hemorrhage_cnn_model.h5"
     # Upload Image
     # ------------------------------------------------
 
-    uploaded_file = st.file_uploader(
+uploaded_file = st.file_uploader(
         "Choose a brain CT scan image",
         type=["jpg", "jpeg", "png"]
     )
