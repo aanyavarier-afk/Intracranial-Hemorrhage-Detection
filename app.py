@@ -15,16 +15,21 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------
-# Load Model
+# Load Model (Bypasses Keras 3 legacy load issue)
 # ---------------------------------------------------
 @st.cache_resource
-def load_model(model_path):
-    model = tf.keras.models.load_model(
-        model_path,
-        compile=False,
-        safe_mode=False
-    )
-    return model
+def load_model_file(model_path):
+    try:
+        # Standard load without compiling
+        return tf.keras.models.load_model(model_path, compile=False)
+    except Exception:
+        try:
+            # Fallback for Keras 3 deserialization
+            return tf.keras.models.load_model(model_path, compile=False, safe_mode=False)
+        except Exception:
+            # Legacy tf_keras fallback
+            import tf_keras
+            return tf_keras.models.load_model(model_path, compile=False)
 
 
 # ---------------------------------------------------
@@ -153,7 +158,7 @@ def main():
         )
         st.stop()
 
-    model = load_model(model_path)
+    model = load_model_file(model_path)
 
     # --------------------------------------------------
     # Upload Image
@@ -198,21 +203,6 @@ def main():
                 f"Model Confidence: {confidence:.2%}"
             )
             show_normal_information()
-
-        # ------------------------------------------------
-        # Disclaimer
-        # ------------------------------------------------
-        st.write("---")
-        st.subheader("⚕️ Medical Disclaimer")
-        st.caption("""
-        This AI model is intended for educational and research
-        demonstration purposes only. The prediction should not be
-        used to diagnose, treat, or rule out intracranial hemorrhage.
-        CT scans should be interpreted by qualified healthcare
-        professionals together with the patient's symptoms and
-        clinical history.
-        """)
-
 
 # ---------------------------------------------------
 # Run Application
