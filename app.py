@@ -184,7 +184,7 @@ def main():
     # Load Model
     # ------------------------------------------------
 
-    model = load_model(model_path)
+model_path = "brain_hemorrhage_cnn_model.h5"
 
     # ------------------------------------------------
     # Upload Image
