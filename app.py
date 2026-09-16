@@ -1,12 +1,12 @@
-import os
-import numpy as np
 import streamlit as st
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
+import numpy as np
 from PIL import Image
+import os
 
 # ---------------------------------------------------
-# Streamlit Configuration (MUST BE FIRST STREAMLIT COMMAND)
+# Streamlit Configuration
 # ---------------------------------------------------
 st.set_page_config(
     page_title="Intracranial Hemorrhage Detection",
@@ -16,52 +16,41 @@ st.set_page_config(
 
 
 # ---------------------------------------------------
-# Load Model (Handles Keras 2/3 Compatibility & TypeErrors)
+# Load Model (Bypasses Keras 3 legacy load issue)
 # ---------------------------------------------------
 @st.cache_resource
 def load_model_file(model_path):
-    # Strategy 1: Reconstruct architecture and load weights directly
-    try:
-        model = tf.keras.Sequential([
-            tf.keras.layers.Input(shape=(64, 64, 3)),
-            tf.keras.layers.Conv2D(32, (3, 3), activation='relu'),
-            tf.keras.layers.MaxPooling2D((2, 2)),
-            tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
-            tf.keras.layers.MaxPooling2D((2, 2)),
-            tf.keras.layers.Flatten(),
-            tf.keras.layers.Dense(64, activation='relu'),
-            tf.keras.layers.Dense(1, activation='sigmoid')
-        ])
-        model.load_weights(model_path)
-        return model
-    except Exception:
-        pass
-
-    # Strategy 2: Direct load bypassing compile checks
-    try:
-        return tf.keras.models.load_model(model_path, compile=False, safe_mode=False)
-    except Exception:
-        pass
-
-    # Strategy 3: Legacy tf_keras load
-    import tf_keras
-    return tf_keras.models.load_model(model_path, compile=False)
+    # Rebuild CNN architecture
+    model = tf.keras.Sequential([
+        tf.keras.layers.Input(shape=(64, 64, 3)),
+        tf.keras.layers.Conv2D(32, (3, 3), activation='relu'),
+        tf.keras.layers.MaxPooling2D((2, 2)),
+        tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
+        tf.keras.layers.MaxPooling2D((2, 2)),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(64, activation='relu'),
+        tf.keras.layers.Dense(1, activation='sigmoid')
+    ])
+    
+    # Load weights safely without deserializing layer configs
+    model.load_weights(model_path)
+    return model
 
 
 # ---------------------------------------------------
 # Preprocess Image
 # ---------------------------------------------------
 def preprocess_image(uploaded_file, target_size=(64, 64)):
-    img = Image.open(uploaded_file).convert("RGB")
+    img = Image.open(uploaded_file)
+    img = img.convert("RGB")
     img = img.resize(target_size)
     img_array = image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)
     img_array = img_array / 255.0
     return img_array
 
-
 # ---------------------------------------------------
-# Hemorrhage Information
+# Hemorrhage Precautions
 # ---------------------------------------------------
 def show_hemorrhage_information():
     st.error("🚨 Possible Intracranial Hemorrhage Detected")
@@ -111,9 +100,6 @@ def show_hemorrhage_information():
     st.info("""
     Take the patient to an emergency department or contact your local
     emergency medical service as soon as possible.
-
-    This application is only an educational demonstration and cannot
-    confirm or rule out intracranial hemorrhage.
     """)
 
 
@@ -157,10 +143,9 @@ def main():
         "educational prediction."
     )
 
-    st.warning(
-        "It is not a medical diagnostic tool."
-    )
-
+    # ------------------------------------------------
+    # Model Path & Loading
+    # ------------------------------------------------
     model_path = "brain_hemorrhage_cnn_model.h5"
 
     if not os.path.exists(model_path):
@@ -172,6 +157,9 @@ def main():
 
     model = load_model_file(model_path)
 
+    # --------------------------------------------------
+    # Upload Image
+    # --------------------------------------------------
     uploaded_file = st.file_uploader(
         "Choose a brain CT scan image",
         type=["jpg", "jpeg", "png"]
@@ -187,6 +175,9 @@ def main():
 
         st.write("---")
 
+        # ------------------------------------------------
+        # Prediction
+        # ------------------------------------------------
         with st.spinner("Analyzing CT scan..."):
             processed_image = preprocess_image(uploaded_file)
             prediction = model.predict(processed_image, verbose=0)
@@ -209,18 +200,6 @@ def main():
                 f"Model Confidence: {confidence:.2%}"
             )
             show_normal_information()
-
-        st.write("---")
-        st.subheader("⚕️ Medical Disclaimer")
-        st.caption("""
-        This AI model is intended for educational and research
-        demonstration purposes only. The prediction should not be
-        used to diagnose, treat, or rule out intracranial hemorrhage.
-        CT scans should be interpreted by qualified healthcare
-        professionals together with the patient's symptoms and
-        clinical history.
-        """)
-
 
 # ---------------------------------------------------
 # Run Application
