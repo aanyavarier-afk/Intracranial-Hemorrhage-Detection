@@ -186,19 +186,18 @@ def main():
 
 model_path = "brain_hemorrhage_cnn_model.h5"
 
-    # ------------------------------------------------
-    # Upload Image
-    # ------------------------------------------------
+# --------------------------------------------------
+# Upload Image
+# --------------------------------------------------
 
 uploaded_file = st.file_uploader(
-        "Choose a brain CT scan image",
-        type=["jpg", "jpeg", "png"]
-    )
+    "Choose a brain CT scan image",
+    type=["jpg", "jpeg", "png"]
+)
 
-    if uploaded_file is not None:
-
-        # Display uploaded image
-        st.subheader("📷 Uploaded CT Scan")
+if uploaded_file is not None:
+    # Display uploaded image
+    st.subheader("📸 Uploaded CT Scan")
 
         st.image(
             uploaded_file,
