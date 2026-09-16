@@ -204,21 +204,6 @@ def main():
             )
             show_normal_information()
 
-        # ------------------------------------------------
-        # Disclaimer
-        # ------------------------------------------------
-        st.write("---")
-        st.subheader("⚕️ Medical Disclaimer")
-        st.caption("""
-        This AI model is intended for educational and research
-        demonstration purposes only. The prediction should not be
-        used to diagnose, treat, or rule out intracranial hemorrhage.
-        CT scans should be interpreted by qualified healthcare
-        professionals together with the patient's symptoms and
-        clinical history.
-        """)
-
-
 # ---------------------------------------------------
 # Run Application
 # ---------------------------------------------------
