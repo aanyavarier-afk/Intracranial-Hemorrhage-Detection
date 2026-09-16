@@ -197,13 +197,12 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None:
     # Display uploaded image
-    st.subheader("📸 Uploaded CT Scan")
-
-        st.image(
-            uploaded_file,
-            caption="Uploaded CT Scan",
-            use_container_width=True
-        )
+    st.subheader("Uploaded CT Scan")
+    st.image(
+        uploaded_file,
+        caption="Uploaded Image",
+        use_column_width=True
+    )
 
         st.write("---")
 
