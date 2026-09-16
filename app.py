@@ -126,11 +126,5 @@ def main():
         else:
             st.success(f"✅ Normal Scan\n\nModel Confidence: {(1.0 - prob):.2%}")
             show_normal_information()
-
-        st.write("---")
-        st.subheader("⚕️ Medical Disclaimer")
-        st.caption("This AI model is intended for educational purposes only.")
-
-
 if __name__ == "__main__":
     main()
