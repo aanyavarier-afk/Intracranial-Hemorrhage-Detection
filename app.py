@@ -13,29 +13,17 @@ st.set_page_config(
     page_icon="🧠",
     layout="centered"
 )
-
-
-# ---------------------------------------------------
-# Load Model (Bypasses Keras 3 legacy load issue)
+    # ---------------------------------------------------
+# Load Model (Loads full model architecture + weights)
 # ---------------------------------------------------
 @st.cache_resource
 def load_model_file(model_path):
-    # Rebuild CNN architecture
-    model = tf.keras.Sequential([
-        tf.keras.layers.Input(shape=(64, 64, 3)),
-        tf.keras.layers.Conv2D(32, (3, 3), activation='relu'),
-        tf.keras.layers.MaxPooling2D((2, 2)),
-        tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
-        tf.keras.layers.MaxPooling2D((2, 2)),
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(64, activation='relu'),
-        tf.keras.layers.Dense(1, activation='sigmoid')
-    ])
-    
+    # Load the entire model directly
+    model = tf.keras.models.load_model(model_path)
+    return model
     # Load weights safely without deserializing layer configs
     model.load_weights(model_path)
     return model
-
 
 # ---------------------------------------------------
 # Preprocess Image
