@@ -13,17 +13,17 @@ st.set_page_config(
     page_icon="🧠",
     layout="centered"
 )
-    # ---------------------------------------------------
-# Load Model (Loads full model architecture + weights)
+
+
+# ---------------------------------------------------
+# Load Model (Using modern Keras format)
 # ---------------------------------------------------
 @st.cache_resource
 def load_model_file(model_path):
-    # Load the entire model directly
+    # Load the entire modern Keras model (.keras format)
     model = tf.keras.models.load_model(model_path)
     return model
-    # Load weights safely without deserializing layer configs
-    model.load_weights(model_path)
-    return model
+
 
 # ---------------------------------------------------
 # Preprocess Image
@@ -132,9 +132,9 @@ def main():
     )
 
     # ------------------------------------------------
-    # Model Path & Loading
+    # Model Path & Loading (.keras format)
     # ------------------------------------------------
-    model_path = "brain_hemorrhage_cnn_model.h5"
+    model_path = "brain_hemorrhage_cnn_model.keras"
 
     if not os.path.exists(model_path):
         st.error(
